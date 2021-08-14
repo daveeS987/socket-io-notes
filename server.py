@@ -11,9 +11,18 @@ sio = socketio.Server()
 app = socketio.WSGIApp(sio)
 
 # this is a built in listener given to us by socketio
+players = []
+
+
 @sio.event
 def connect(sid, environ):
-    print("A new Player connected to global namespace", sid)
+    print("A New Player Connected: ", sid)
+    if len(players) == 0:
+        sio.emit("position", "Player1", room=sid)
+    if len(players) == 1:
+        sio.emit("position", "Player2", room=sid)
+
+    players.append(sid)
     sio.enter_room(sid, "game room")
     print("A new player entered game room")
 
@@ -22,7 +31,7 @@ def connect(sid, environ):
 @sio.event
 def move(sid, data):
     print("MOVE from client: ", data)
-    sio.emit("move", data, room="game room", skip_sid=sid)
+    sio.emit("receive", data, room="game room", skip_sid=sid)
 
 
 # this is another way to listen
@@ -35,6 +44,8 @@ def message(sid, data):
 @sio.event
 def disconnect(sid):
     print("Disconnected SID >> ", sid)
+    players.remove(sid)
+    print("This is now the list: ", players)
 
 
 # ---------------- Class Based NameSpace ------------

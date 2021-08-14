@@ -30,6 +30,7 @@ def disconnect():
 
 
 sio.connect("http://localhost:8000")
+# sio.connect("http://git.heroku.com/codesockettets.git:57060")
 
 while True:
     a_move = random.choice(["2LEFT", "2RIGHT", "2UP", "2DOWN"])
