@@ -2,16 +2,17 @@ import socketio
 from faker import Faker
 from time import time, sleep
 
+from socketio import client
+
 fake = Faker("en_US")
 
-# -------------- Will trigger GameNameSpace in Server ----------
 sio = socketio.Client()
 
 
 @sio.event
 def connect():
-    print("Client 2 connected")
-    sio.emit("message_from_client", "from client3")
+    print("Client 4 connected")
+    sio.emit("message_from_client", "from client4")
 
 
 @sio.event
@@ -25,8 +26,8 @@ def disconnect():
     print("disconnected from server")
 
 
+# s = SocketConnections()
 sio.connect("http://localhost:8000", namespaces=["/game"])
-
 
 while True:
     sio.emit("move", fake.name(), namespace="/game")
