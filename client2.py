@@ -1,37 +1,42 @@
 import socketio
-from faker import Faker
 from time import time, sleep
+import random
 
-fake = Faker("en_US")
 
-# -------------- Will trigger GameNameSpace in Server ----------
+# -------------- Will trigger Global Namespace in Server ----------
 sio = socketio.Client()
 
 
 @sio.event
 def connect():
-    print("Client 2 connected")
-    sio.emit("message_from_client", "from client3")
+    print("Player 2 Connected")
+    sio.emit("message", "Player 2")
 
 
 @sio.event
-def my_message(data):
-    print("message received with ", data)
-    sio.emit("my response", {"response": "my response"})
+def message(data):
+    print("Player2 Received Message:", data)
+    sio.emit("my response", "A listener that was triggered by response")
+
+
+@sio.event
+def move(data):
+    print("Player 2 Received Move: ", data)
 
 
 @sio.event
 def disconnect():
-    print("disconnected from server")
+    print("Player 2 Disconnected from server")
 
 
-sio.connect("http://localhost:8000", namespaces=["/game"])
-
+sio.connect("http://localhost:8000")
 
 while True:
-    sio.emit("move", fake.name(), namespace="/game")
-    sleep(0.1)
-
+    a_move = random.choice(["2LEFT", "2RIGHT", "2UP", "2DOWN"])
+    sio.emit(
+        "move",
+        a_move,
+    )
+    sleep(2)
 
 # sio.wait()
-# Nothing will run after sio.wait()
