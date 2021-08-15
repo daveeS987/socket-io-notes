@@ -3,7 +3,6 @@ from time import time, sleep
 import random
 
 
-# -------------- Will trigger Global Namespace in Server ----------
 sio = socketio.Client()
 
 
